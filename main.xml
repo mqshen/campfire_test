@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure SYSTEM "file:///Users/GoldRatio/WorkspaceGroup/ChatWorkspace/campfire.bak/xml/src/main/resources/org.goldratio.campfire.xml/configure_9_0.dtd" >
+<!-- =============================================================== -->
+<!-- Documentation of this file format can be found at:              -->
+<!-- http://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax        -->
+<!--                                                                 -->
+<!-- Additional configuration files are available in $JETTY_HOME/etc -->
+<!-- and can be mixed in. See start.ini file for the default         -->
+<!-- configuration files.                                            -->
+<!--                                                                 -->
+<!-- For a description of the configuration mechanism, see the       -->
+<!-- output of:                                                      -->
+<!--   java -jar start.jar -?                                        -->
+<!-- =============================================================== -->
+
+<!-- =============================================================== -->
+<!-- Configure a Jetty Server instance with an ID "Server"           -->
+<!-- Other configuration files may also configure the "Server"       -->
+<!-- ID, in which case they are adding configuration to the same     -->
+<!-- instance.  If other configuration have a different ID, they     -->
+<!-- will create and configure another instance of Jetty.            -->
+<!-- Consult the javadoc of o.e.j.server.Server for all              -->
+<!-- configuration that may be set here.                             -->
+<!-- =============================================================== -->
+<Configure id="saslProcessor" class="org.goldratio.xmpp.processor.SASLProcessor">
+
+    <Arg>
+        <New id="callbackHandler" class="org.goldratio.xmpp.processor.XMPPCallbackHandler">
+            <Arg>
+                <New class="org.goldratio.xmpp.auth.AuthFactory">
+                    <Arg name="authProvider"><Ref refid="authProvider" /></Arg>
+                </New>
+            </Arg>
+            <Arg>
+                <New class="org.goldratio.xmpp.auth.AuthorizationManager">
+                    <Arg name="userManager"><Ref refid="userManage" /></Arg>
+                    <Call name="addAuthorizationPolicy">
+                        <Arg>
+                            <New class="org.goldratio.xmpp.auth.DefaultAuthorizationPolicy">
+                            </New>
+                        </Arg>
+                    </Call>
+                    <Call name="addAuthorizationMapping">
+                        <Arg>
+                            <New class="org.goldratio.xmpp.auth.DefaultAuthorizationMapping">
+                            </New>
+                        </Arg>
+                    </Call>
+                </New>
+            </Arg>
+        </New>
+    </Arg>
+
+    <New id="processor" class="org.goldratio.xmpp.processor.ProcessorCollection">
+        <Call name="setProcessor">
+            <Arg>
+                <New class="org.goldratio.xmpp.processor.IQProcessor">
+                    <Arg>
+                        <New class="org.goldratio.xmpp.processor.RosterProcessor">
+                            <Arg><Ref refid="connectionManager" /></Arg>
+                        </New>
+                    </Arg>
+                </New>
+            </Arg>
+        </Call>
+        <Call name="setProcessor">
+            <Arg>
+                <New class="org.goldratio.xmpp.processor.MessageProcessor">
+                    <Arg><Ref refid="connectionManager" /></Arg>
+                </New>
+            </Arg>
+        </Call>
+        <Call name="setProcessor">
+            <Arg>
+                <New class="org.goldratio.xmpp.processor.PresenceProcessor">
+                </New>
+            </Arg>
+        </Call>
+    </New>
+
+</Configure>

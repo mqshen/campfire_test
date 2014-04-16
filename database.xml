@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure SYSTEM "file:///Users/GoldRatio/WorkspaceGroup/ChatWorkspace/campfire.bak/xml/src/main/resources/org.goldratio.campfire.xml/configure_9_0.dtd" >
+<!-- =============================================================== -->
+<!-- Documentation of this file format can be found at:              -->
+<!-- http://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax        -->
+<!--                                                                 -->
+<!-- Additional configuration files are available in $JETTY_HOME/etc -->
+<!-- and can be mixed in. See start.ini file for the default         -->
+<!-- configuration files.                                            -->
+<!--                                                                 -->
+<!-- For a description of the configuration mechanism, see the       -->
+<!-- output of:                                                      -->
+<!--   java -jar start.jar -?                                        -->
+<!-- =============================================================== -->
+
+<!-- =============================================================== -->
+<!-- Configure a Jetty Server instance with an ID "Server"           -->
+<!-- Other configuration files may also configure the "Server"       -->
+<!-- ID, in which case they are adding configuration to the same     -->
+<!-- instance.  If other configuration have a different ID, they     -->
+<!-- will create and configure another instance of Jetty.            -->
+<!-- Consult the javadoc of o.e.j.server.Server for all              -->
+<!-- configuration that may be set here.                             -->
+<!-- =============================================================== -->
+<Configure id="connectionManager" class="org.goldratio.xmpp.database.DbConnectionManager">
+
+    <Call name="setConnectionProvider">
+        <Arg>
+            <New class="org.goldratio.xmpp.database.DefaultConnectionProvider">
+                <Arg name="driver">com.mysql.jdbc.Driver</Arg>
+                <Arg name="serverURL">jdbc:mysql://117.79.146.131:3306/campfire</Arg>
+                <Arg name="username">microloan</Arg>
+                <Arg name="password">microloan</Arg>
+                <!--
+                <Arg name="minConnections" type="int">3</Arg>
+                <Arg name="maxConnections" type="int">10</Arg>
+                <Arg name="connectionTimeout" type="double">0.5</Arg>
+                -->
+            </New>
+        </Arg>
+    </Call>
+
+
+    <New id="userManage" class="org.goldratio.xmpp.user.UserManager">
+        <Arg>
+            <New class="org.goldratio.xmpp.user.JDBCUserProvider">
+                <Arg name="connectionManager"><Ref refid="connectionManager" /></Arg>
+            </New>
+        </Arg>
+    </New>
+
+    <New id="authProvider" class="org.goldratio.xmpp.auth.JDBCAuthProvider">
+        <Arg name="connectionManager"><Ref refid="connectionManager" /></Arg>
+    </New>
+
+</Configure>
